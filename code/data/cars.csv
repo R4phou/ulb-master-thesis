@@ -1,0 +1,51 @@
+Nom, Vitesse, Poids, Age, Puissance, Consommation
+"Chevrolet Chevelle Malibu", 14, 3504, 18, 130, 18
+"Buick Skylark 320", 15, 3693, 15, 165, 15
+"Plymouth Satellite", 18, 3436, 18, 150, 18
+"AMC Rebel SST", 16, 3433, 16, 150, 16
+"Ford Torino", 17, 3449, 17, 140, 17
+"Ford Galaxie 500", 15, 4341, 14, 198, 15
+"Chevrolet Impala", 14, 4354, 14, 220, 14
+"Plymouth Fury iii", 14, 4312, 14, 215, 14
+"Pontiac Catalina", 14, 4425, 14, 225, 14
+"AMC Ambassador DPL", 15, 3850, 15, 190, 15
+"Dodge Challenger SE", 15, 3563, 15, 170, 15
+"Plymouth 'Cuda 340", 14, 3609, 15, 160, 14
+"Chevrolet Monte Carlo", 15, 3761, 15, 150, 15
+"Buick Estate Wagon (sw)", 14, 3086, 14, 225, 14
+"Toyota Corolla Mark ii", 24, 2372, 20, 95, 24
+"Plymouth Duster", 22, 2833, 18, 95, 22
+"AMC Hornet", 18, 2774, 18, 97, 18
+"Ford Maverick", 21, 2587, 18, 85, 21
+"Datsun PL510", 27, 2130, 19, 88, 27
+"Volkswagen 1131 Deluxe Sedan", 26, 1835, 24, 46, 26
+"Peugeot 504", 25, 2672, 27, 62, 25
+"Audi 100 LS", 24, 2430, 25, 95, 24
+"Saab 99e", 25, 2375, 25, 115, 25
+"BMW 2002", 26, 2234, 24, 115, 26
+"AMC Gremlin", 21, 2648, 22, 110, 21
+"Ford F250", 10, 4615, 14, 215, 10
+"Chevy C20", 10, 4372, 14, 200, 10
+"Dodge D200", 11, 4382, 14, 210, 11
+"Hi 1200D", 9, 4732, 14, 193, 9
+"Datsun PL510", 27, 2130, 19, 88, 27
+"Chevrolet Vega 2300", 28, 2264, 19, 90, 28
+"Toyota Corolla", 25, 2228, 21, 95, 25
+"Ford Pinto", 25, 2046, 21, 105, 25
+"Volkswagen Super Beetle", 26, 1978, 24, 48, 26
+"AMC Gremlin", 21, 2634, 22, 110, 21
+"Plymouth Satellite Custom", 16, 3439, 15, 165, 16
+"Chevrolet Chevelle Malibu", 16, 3329, 15, 153, 16
+"Ford Torino 500", 17, 3302, 15, 175, 17
+"AMC Matador", 15, 3288, 15, 175, 15
+"Chevrolet Impala", 14, 4209, 14, 170, 14
+"Pontiac Catalina Brougham", 14, 4464, 14, 180, 14
+"Ford Galaxie 500", 14, 4154, 14, 180, 14
+"Plymouth Fury iii", 14, 4096, 14, 170, 14
+"Dodge Monaco (sw)", 12, 4955, 12, 208, 12
+"Ford Country Squire (sw)", 13, 4746, 12, 215, 13
+"Pontiac Safari (sw)", 13, 5140, 12, 225, 13
+"AMC Hornet Sportabout (sw)", 18, 2962, 18, 105, 18
+"Chevrolet Vega (sw)", 22, 2408, 19, 85, 22
+"Pontiac Firebird", 19, 3282, 15, 100, 19
+"Ford Mustang", 18, 3139, 14, 88, 18
