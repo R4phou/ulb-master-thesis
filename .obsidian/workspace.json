@@ -1,0 +1,263 @@
+{
+  "main": {
+    "id": "b732cca7c905f01a",
+    "type": "split",
+    "children": [
+      {
+        "id": "84effb84958a96f8",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "21e9ebd36a61cbf9",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notes-References/Notes - Promethee Gamma.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Notes - Promethee Gamma"
+            }
+          },
+          {
+            "id": "b9aab4cb2adc1910",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Meeting/1. 14-10-2024.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "1. 14-10-2024"
+            }
+          },
+          {
+            "id": "b9e190deb7971582",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "References/Promethee Gamma.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Promethee Gamma"
+            }
+          },
+          {
+            "id": "7313ee2d9fb8a27b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Meeting/2. 06-11-2024.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "2. 06-11-2024"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "80691ca5be374435",
+    "type": "split",
+    "children": [
+      {
+        "id": "f49d2a7e5f8a53f1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "f26bdf79085f6b86",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1fce0b35afbda402",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "3d63b2ca6a4b06dd",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          },
+          {
+            "id": "8808aaf24ea5abce",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "References/Promethee Gamma.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Promethee Gamma"
+            }
+          },
+          {
+            "id": "f8465633f4fad9c2",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "References/Promethee Gamma.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Promethee Gamma"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 497.5
+  },
+  "right": {
+    "id": "2aecd715deb320b6",
+    "type": "split",
+    "children": [
+      {
+        "id": "0c5ba5955cda5fe5",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2926b8a47c1ac49d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Notes-References/Notes - Promethee Gamma.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Notes - Promethee Gamma"
+            }
+          },
+          {
+            "id": "b9a4454b7e8218e1",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Notes-References/Notes - Promethee Gamma.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Notes - Promethee Gamma"
+            }
+          },
+          {
+            "id": "cb2148e96a639da4",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "003c58af551eab0f",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Notes-References/Notes - Promethee Gamma.md"
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Notes - Promethee Gamma"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "7313ee2d9fb8a27b",
+  "lastOpenFiles": [
+    "Meeting/1. 14-10-2024.md",
+    "References/Promethee Gamma.pdf",
+    "Notes-References/Notes - Promethee Gamma.md",
+    "Meeting/2. 06-11-2024.md",
+    "Notes-References/References.md",
+    "src/output",
+    "src/data",
+    "src",
+    "Mémoire.md",
+    "img/Pasted image 20241105131332.png",
+    "Meeting",
+    "img/Pasted image 20241105132331.png",
+    "img/Pasted image 20241105132249.png",
+    "img/Pasted image 20241003172518.png",
+    "Notes - Wiart Valentin.md",
+    "References/MCDA_Clustering_Desmet.pdf",
+    "References/Promethee Methods.pdf",
+    "img/Pasted image 20241003175202.png",
+    "img/Pasted image 20241003174451.png",
+    "img/Pasted image 20241003172833.png",
+    "References/Remote sensing of Environment.pdf",
+    "Notes-References/Notes - Clustering in MCDA.md",
+    "img/Pasted image 20241001212010.png",
+    "Notes-References",
+    "Notes-References/Notes - Promethee Methods.md",
+    "img/Pasted image 20241001213730.png",
+    "img/Pasted image 20241001212504.png",
+    "Notes-References/Notes - Remote sensing of the environment.md",
+    "References/MCDA_Clustering_Desmet.pdf.crdownload",
+    "Welcome.md"
+  ]
+}
