@@ -1,7 +1,8 @@
 from utils import *
 
 
-PATH = '../data/cars.csv'
+PATH = './code/data/cars.csv'
+
 
 data = read_data(PATH)
 
@@ -44,13 +45,9 @@ def phi_c(ai, A, c):
         phi_c(ai, A) for criteria c = mono criterion net flow score of alternative a_i for criteria c
         A: alternatives matrix
         c: criteria
-        ohi_c(ai, A) = sum(W[c] * linear_Pk(ai, aj, c) for aj in A)
+        phi_c(ai, A) = sum(W[c] * linear_Pk(ai, aj, c) for aj in A)
     """
-    phi = 0
-    for aj in A:
-        phi += linear_Pk(ai, aj, c) - linear_Pk(aj, ai, c)
-    return phi/(N-1)
-    # return 1/ (N-1) * sum([(linear_Pk(ai, aj, c) - linear_Pk(aj, ai, c) )for aj in A])
+    return 1/ (N-1) * sum([(linear_Pk(ai, aj, c) - linear_Pk(aj, ai, c)) for aj in A])
 
 def matrices_phi(A):
     """
@@ -93,8 +90,11 @@ def plot_gamma_on_graph(gamma):
     ax.axvline(x=T_I, color='r', linestyle='--')
 
     plt.show()
-    
+
 def compute_indicators(gamma):
+    """"
+    Function that computes the matrix of indicators I, J and P of size N x N (N = number of alternatives)
+    """
     I = np.zeros((N, N))
     J = np.zeros((N, N))
     P = np.zeros((N, N))
@@ -106,14 +106,14 @@ def compute_indicators(gamma):
             P[j, i] = (gamma[j, i] - gamma[i, j])/P_F
     return I, J, P
 
-
 gamma = matrice_gamma(A)
-plot_gamma_on_graph(gamma)
 I, J, P = compute_indicators(gamma)
+
 
 def select_relation(I, J, P, gamma):
     """
         Select the relation between two alternatives
+        Returns the matrices Is, Js, Ps of size N x N (N = number of alternatives) with the values of gamma only for the selected relation
     """
     Is = np.zeros((N, N))
     Js = np.zeros((N, N))
@@ -129,8 +129,6 @@ def select_relation(I, J, P, gamma):
             elif P[j, i] > max(I[i, j], J[i, j], P[i, j]):
                 Ps[i, j] = gamma[i, j]
     return Is, Js, Ps
-
-Is, Js, Ps = select_relation(I, J, P, gamma)
 
 
 def plot_gamma_on_graph(Is, Js, Ps):
@@ -155,4 +153,7 @@ def plot_gamma_on_graph(Is, Js, Ps):
 
     plt.show()
 
+
+
+Is, Js, Ps = select_relation(I, J, P, gamma)
 plot_gamma_on_graph(Is, Js, Ps)
