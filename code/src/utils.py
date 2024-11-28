@@ -50,3 +50,86 @@ def normalize_columns(data1, data2):
         data1_norm[column] = (data1[column] - mean) / std
         data2_norm[column] = (data2[column] - mean) / std
     return data1_norm, data2_norm
+
+
+def transform_cols_in_sequence(data, col_id, range_of_years):
+    cols = [col_id + year for year in range_of_years]
+
+    # Transform col_id to remove "_"
+    col_id = col_id.replace("_", "")
+
+    # Add a new column named col_id (will be the sequence)
+    data[col_id] = None
+
+    for i, row in data.iterrows(): # For each row
+        sequence = []
+        for col in cols: # For each column
+            sequence.append(row[col])
+        sequence = np.array(sequence) # Transform the sequence into a numpy array
+        data.at[i, col_id] = sequence # Replace the value of the new column with the sequence
+
+    # Drop the columns that were transformed
+    data = data.drop(columns=cols)
+
+    return data
+
+def read_data():
+    PATH = "../data/HDI/HDR23-24_Composite_indices_complete_time_series.csv"
+    data = pd.read_csv(PATH, encoding='latin1')
+    data = data.dropna()
+
+    years = [str(i) for i in range(1990, 2023)]
+
+    fixed_col_names_to_keep = ['iso3']
+    var_col_names_to_keep = ["co2_prod_", "pop_total_", "hdi_", "le_", "gdi_", "eys_"]
+
+    col_names_to_keep = fixed_col_names_to_keep + [var + year for var in var_col_names_to_keep for year in years]
+
+    data = data[col_names_to_keep]
+
+     # Transform the variable columns into sequences
+    for col in var_col_names_to_keep: 
+        data = transform_cols_in_sequence(data, col, years)
+
+    return data
+
+
+def scale_column(data, col):
+    """
+    Scale a column between 0 and 1 knowing that each row is a sequence np.array
+    Scaling using the min and max of the column and not of the sequence each time!
+    """
+    min_val = data[col].apply(lambda x: x.min()).min()
+    max_val = data[col].apply(lambda x: x.max()).max()
+    data[col] = data[col].apply(lambda x: (x - min_val) / (max_val - min_val))
+    return data
+
+def scale_data(data):
+    """
+    Scale all the columns that are sequences (all except the first one, here it is 'iso3')
+    """
+    for col in data.columns[1:]:
+        data = scale_column(data, col)
+    return data
+
+def plot_data(data, legend=False):
+    """ 
+    For each column, plot a graph with one color per row (country in this case)
+    On the x-axis, the years (1990-2022)
+    Using subplots with two columns
+    """
+    x = np.arange(1990, 2023)
+    Nb_cols = len(data.columns) - 1
+    fig, axs = plt.subplots((Nb_cols + 1) // 2, 2, figsize=(15, 10))
+    axs = axs.flatten()
+
+    for i, col in enumerate(data.columns[1:]):
+        for j, row in data.iterrows():
+            axs[i].plot(x, row[col], label=row["iso3"]) 
+        axs[i].set_title(col)
+        axs[i].set_xticks(x)
+        axs[i].set_xticklabels(x, rotation=45)
+        if legend:
+            axs[i].legend()  # Add legend here
+    plt.tight_layout()
+    plt.show()
