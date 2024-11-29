@@ -1,6 +1,5 @@
 import pandas as pd
-import numpy as np
-from matplotlib import pyplot as plt
+from plot import *
 
 def read_data(path):
     data = pd.read_csv(path)
@@ -112,24 +111,3 @@ def scale_data(data):
         data = scale_column(data, col)
     return data
 
-def plot_data(data, legend=False):
-    """ 
-    For each column, plot a graph with one color per row (country in this case)
-    On the x-axis, the years (1990-2022)
-    Using subplots with two columns
-    """
-    x = np.arange(1990, 2023)
-    Nb_cols = len(data.columns) - 1
-    fig, axs = plt.subplots((Nb_cols + 1) // 2, 2, figsize=(15, 10))
-    axs = axs.flatten()
-
-    for i, col in enumerate(data.columns[1:]):
-        for j, row in data.iterrows():
-            axs[i].plot(x, row[col], label=row["iso3"]) 
-        axs[i].set_title(col)
-        axs[i].set_xticks(x)
-        axs[i].set_xticklabels(x, rotation=45)
-        if legend:
-            axs[i].legend()  # Add legend here
-    plt.tight_layout()
-    plt.show()
