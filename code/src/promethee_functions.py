@@ -9,6 +9,8 @@ def linear_P_c(a_i, a_j, c, P, Q):
     - c: the criteria identifier
     - P: the preference threshold
     - Q: the indifference threshold
+
+    The values in the time series are between 0 and 1
     """
     d = a_i[c] - a_j[c]
     for i in range(len(d)): # For each time step
@@ -25,6 +27,8 @@ def P_c_matrix(data, c, P, Q):
     Returns: The preference matrix within criteria c, size NxN where each cell is a time series
     - data: the multi-criteria time series data
     - c: the criteria identifier
+
+    The values in P_c matrix are between 0 and 1
     """
     L = data.iloc[0]["co2prod"].shape[0] #lenght of the time series
     N = data.shape[0]
@@ -42,6 +46,8 @@ def get_Phi_c_ai(i, P_c):
     - a_i: a multi-criteria time series
     - P_c: the preference matrix within criteria c
     - c: the criteria identifier
+
+    The values in Phi_c are between -1 and 1
     """
     N = P_c.shape[0]
     sum = 0
@@ -95,6 +101,53 @@ def get_PHI(data, W, P, Q):
     alternate_names = data["iso3"].values
     plot_phi_c_all(PHI_c_all, data.columns[1:], alternate_names, labels=False)
     return PHI_all(PHI_c_all, W, N, L, K)
+
+
+def gamma_ai_aj(ai, aj, PHI_c_all, W, L, criterias):
+    """ 
+    Compute the gamma value between two alternatives
+    - ai: a multi-criteria time series
+    - aj: a multi-criteria time series
+    - PHI_c_all: A list of k lists of N time series
+    - W: The weights of the criteria
+
+    Returns:
+     - gamma(ai, aj): a time series of size L where each cell is the sum of the weighted differences between PHI_c(ai) and PHI_c(aj) for the times where ai is preferred to aj
+
+    gamma(ai, aj) = sum_c (W_c * (PHI_c(ai) - PHI_c(aj))) but only for the times where ai is preferred to aj
+    """
+    # Initialize gamma list of L zeros
+    gamma = [0 for _ in range(L)]
+    for t in range(L): # For each time step
+        # Check if the value of ai is preferred to aj
+        c_nb=0
+        for c in criterias:
+            if ai[c][t] > aj[c][t]: # If ai has a higher value than aj (the value is the score)
+                gamma[t] += W[c_nb]*PHI_c_all[c_nb][0][t]
+            c_nb += 1
+
+    return gamma
+
+def get_gamma_matrix(data, PHI_c_all, W):
+    """
+    Returns: The gamma matrix, size NxN where each cell is a time series
+    - data: the multi-criteria time series data
+    - PHI_c_all: A list of k lists of N time series
+    - W: The weights of the criteria
+    """
+    criterias = data.columns[1:]
+
+    L = data.iloc[0][criterias[1]].shape[0] # Length of the time series
+    N = data.shape[0] # Number of time series/alternatives
+
+    gamma_matrix = np.zeros((N, N, L))
+    for i in range(N):
+        for j in range(N):
+            if i != j:
+                gamma_matrix[i][j] = gamma_ai_aj(data.iloc[i], data.iloc[j], PHI_c_all, W, L, criterias)
+    return gamma_matrix
+
+
 
 
 def main():

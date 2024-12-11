@@ -71,3 +71,21 @@ def plot_PHI(PHI, alt_names, labels=True):
     if labels:
         plt.legend()
     plt.show()
+
+
+def plot_gammas(gamma_matrix, alt_names):
+    """
+    Plot the gamma matrix for each pair of alternatives
+    """
+    N = gamma_matrix.shape[0]
+    x = np.arange(1990, 2023)
+    fig, axes = plt.subplots(N, 1, figsize=(15, 5*N))
+    for i in range(N):
+        for j in range(N):
+            if i != j:
+                axes[i].plot(x, gamma_matrix[i][j], label=f"{alt_names[j]}")
+                axes[i].set_title(f"Gamma: {alt_names[i]} > others")
+                axes[i].grid()
+                axes[i].legend()
+    # plt.tight_layout()
+    plt.show()
