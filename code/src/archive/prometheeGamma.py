@@ -1,10 +1,10 @@
 from utils import *
 
 
-PATH = './code/data/cars.csv'
+PATH = './code/data/archive/cars.csv'
 
 
-data = read_data(PATH)
+data = read_data_2(PATH)
 
 N = data.shape[0] # number of alternatives
 K = data.shape[1] - 1 # number of criteria
@@ -157,3 +157,4 @@ def plot_gamma_on_graph(Is, Js, Ps):
 
 Is, Js, Ps = select_relation(I, J, P, gamma)
 plot_gamma_on_graph(Is, Js, Ps)
+print(gamma)

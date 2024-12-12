@@ -1,7 +1,7 @@
 import pandas as pd
 from plot import *
 
-def read_data(path):
+def read_data_2(path):
     data = pd.read_csv(path)
     return data
 
