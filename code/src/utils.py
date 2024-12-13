@@ -75,16 +75,16 @@ def transform_cols_in_sequence(data, col_id, range_of_years):
 def read_data():
     PATH = "../data/HDI/HDR23-24_Composite_indices_complete_time_series.csv"
     data = pd.read_csv(PATH, encoding='latin1')
-    data = data.dropna()
 
     years = [str(i) for i in range(1990, 2023)]
 
     fixed_col_names_to_keep = ['iso3']
-    var_col_names_to_keep = ["co2_prod_", "pop_total_", "hdi_", "le_", "gdi_", "eys_"]
+    var_col_names_to_keep = ["co2_prod_", "hdi_", "le_", "gdi_", "eys_", "mys_"]
 
     col_names_to_keep = fixed_col_names_to_keep + [var + year for var in var_col_names_to_keep for year in years]
 
     data = data[col_names_to_keep]
+    data = data.dropna()
 
      # Transform the variable columns into sequences
     for col in var_col_names_to_keep: 

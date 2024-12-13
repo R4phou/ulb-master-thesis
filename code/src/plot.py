@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.animation import FuncAnimation
+from PIL import Image
 
 def plot_data(data, legend=False):
     """ 
@@ -63,7 +65,7 @@ def plot_PHI(PHI, alt_names, labels=True):
     """
     x = np.arange(1990, 2023)
     N = PHI.shape[0]
-    plt.figure(figsize=(15, 3))
+    plt.figure(figsize=(15, 5))
     for i in range(N):
         plt.plot(x, PHI[i], label=alt_names[i])
     plt.title("PHI")
