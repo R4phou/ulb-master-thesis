@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
 from PIL import Image
+from tqdm import tqdm
 
 def plot_data(data, legend=False):
     """ 
