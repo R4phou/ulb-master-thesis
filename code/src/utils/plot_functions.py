@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib.animation import FuncAnimation
 from PIL import Image
 from tqdm import tqdm
+import pandas as pd
 
 def plot_data(data, legend=False):
     """ 
@@ -92,3 +93,7 @@ def plot_gammas(gamma_matrix, alt_names):
                 axes[i].legend()
     # plt.tight_layout()
     plt.show()
+
+
+if __name__ == "__main__":
+    print("plot.py loaded")

@@ -1,5 +1,9 @@
-import pandas as pd
-from plot import *
+print("utils.py Loading")
+if __name__ == "__main__":
+    from plot_functions import *
+else:
+    from utils.plot_functions import *
+
 
 def read_data_2(path):
     data = pd.read_csv(path)
@@ -111,3 +115,6 @@ def scale_data(data):
         data = scale_column(data, col)
     return data
 
+# if main file
+if __name__ == "__main__":
+    print("utils.py loaded")

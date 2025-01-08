@@ -1,4 +1,7 @@
-from utils import *
+if __name__ == "__main__":
+    from utils import *
+else:
+    from utils.utils import *
 
 
 def linear_P_c(a_i, a_j, c, P, Q):
