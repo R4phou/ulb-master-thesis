@@ -17,7 +17,7 @@ def linear_P_c(a_i, a_j, c, P, Q):
     """
     d = a_i[c] - a_j[c]
     for i in range(len(d)): # For each time step
-        if d[i] <= Q[c-1]:
+        if d[i] <= Q[c-1]: # c-1 because the criteria are indexed from 1
             d[i] = 0
         elif d[i] > P[c-1]:
             d[i] = 1
@@ -58,7 +58,6 @@ def get_Phi_c_ai(i, P_c):
         sum += P_c[i][j] - P_c[j][i] 
     return 1/(N-1) * sum
 
-
 def get_Phi_c(data, c, P, Q):
     """
     Returns: The preference function for all time series within criteria c
@@ -74,14 +73,12 @@ def get_Phi_c(data, c, P, Q):
         Phi_c[i] = get_Phi_c_ai(i, P_c)
     return Phi_c
 
-
 def get_all_Phi_c(data, P, Q):
     """
     Returns: A list of all preference functions for all criteria, K is the number of criteria
     """
     K = data.columns.shape[0] -1 # Number of criteria
     return [get_Phi_c(data, c, P, Q) for c in range(K)]
-
 
 def PHI_all(PHI_c_all, W, N, L, K):
     """
@@ -153,7 +150,38 @@ def get_gamma_matrix(data, PHI_c_all, W):
                 gamma_matrix[i][j] = gamma_ai_aj(data.iloc[i], data.iloc[j], i, j, PHI_c_all, W, L, criterias)
     return gamma_matrix
 
+def get_eta_matrix(data, phi_c_all, W):
+    N = data.shape[0]
+    L = data.iloc[0]["co2prod"].shape[0]
+    gamma = get_gamma_matrix(data, phi_c_all, W)
+    eta = np.zeros((N, N, L))
+    for i in range(N):
+        for j in range(N):
+            for l in range(L):
+                eta[i, j, l] = gamma[i, j, l] + gamma[j, i, l]
+    return eta
 
+def aggregate_all_series(data, weight_vector):
+    """ 
+        Aggregate all time series of a matrix NxNxL using a weight vector (one weight per time point)
+    """
+    # Nb of alternatives = data.shape[0]
+    # Nb of time points = data.shape[2]
+
+    def aggregate_series(series, weight_vector):
+        """
+            Aggregate a time series to a single value using a time weight vector (one weight per time point)
+        """
+        return np.dot(series, weight_vector)
+
+    N = data.shape[0]
+    L = data.shape[2]
+    aggregated_series = np.zeros((N, N))
+    for i in range(N):
+        for j in range(N):
+            aggregated_series[i, j] = aggregate_series(data[i, j, :], weight_vector)
+
+    return aggregated_series
 
 def score_function(column, maximize=True):
     """ 

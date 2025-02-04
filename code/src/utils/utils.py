@@ -55,6 +55,26 @@ def normalize_columns(data1, data2):
     return data1_norm, data2_norm
 
 
+def score_function(column, maximize=True):
+    """ 
+    Function that gets the datasets and modify the data to evaluate the scores of the different criterias
+    - column: each value is a time series, if we want to minimize it, we have to invert it
+    - mininimize: boolean, if we want to minimize the value
+    """
+    def invert_values(column):
+        return [-x for x in column]
+
+    if maximize:
+        return column
+    else:
+        # Invert the values: the higher the value, the lower the score
+        column = invert_values(column)
+        # Get the minimum value of the column
+        min_value = min([min(x) for x in column])
+        # Add the minimum value to the column in order to have only positive values
+        column = [x + abs(min_value) for x in column]
+        return column
+
 def transform_cols_in_sequence(data, col_id, range_of_years):
     cols = [col_id + year for year in range_of_years]
 
@@ -77,6 +97,16 @@ def transform_cols_in_sequence(data, col_id, range_of_years):
     return data
 
 def read_data():
+    """ 
+    # le = life expectancy -> maximum is better
+    # gdi = gender development index -> maximum is better
+    # hdi = human development index -> maximum is better
+    # eys = expected years of schooling -> maximum is better
+    # poptotal = total population -> maximum is better
+    # co2prod = production of co2 -> minimum is better
+    # Pass through the score functions
+    """
+    print("Reading HDI dataset")
     PATH = "../data/HDI/HDR23-24_Composite_indices_complete_time_series.csv"
     data = pd.read_csv(PATH, encoding='latin1')
 
@@ -94,8 +124,17 @@ def read_data():
     for col in var_col_names_to_keep: 
         data = transform_cols_in_sequence(data, col, years)
 
-    return data
+    data["co2prod"] = score_function(data["co2prod"], maximize=False)
 
+    # Remove the last 3 rows
+    data = data.iloc[:-3]
+
+    get_min_max_criteria(data, init=True)
+
+    data.index = data["iso3"]
+    data = data.drop(columns=["iso3"])
+
+    return data
 
 def scale_column(data, col):
     """
@@ -114,6 +153,30 @@ def scale_data(data):
     for col in data.columns[1:]:
         data = scale_column(data, col)
     return data
+
+def get_min_max_criteria(data, init=False):
+    min_max = {}
+
+    startcol = 0
+    if init:
+        startcol = 1
+
+    for column in data.columns[startcol:]:
+        min_max[column] = {"min": float('inf'), "max": float('-inf')}
+        # Each column is a column of time series data
+        column_data = data[column]
+
+        for row in column_data:
+            tempmin = row.min()
+            tempmax = row.max()
+            if tempmin < min_max[column]["min"]:
+                min_max[column]["min"] = tempmin
+            if tempmax > min_max[column]["max"]:
+                min_max[column]["max"] = tempmax
+
+        # Print the min and max values for each criteria
+    for key, value in min_max.items():
+        print(f"{key}: min={round(value.get('min'),4)}, max={round(value.get('max'),4)}")
 
 # if main file
 if __name__ == "__main__":

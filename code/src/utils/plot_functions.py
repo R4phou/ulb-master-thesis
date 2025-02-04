@@ -27,6 +27,30 @@ def plot_data(data, legend=False):
     plt.tight_layout()
     plt.show()
 
+def plot_cluster(groups, data, legend=False):
+    """ 
+    Receives a list of groups (a group is a list of indexes of the data)
+    For each column (criterion), plot a graph with one color per group
+    On the x-axis, the years (1990-2022)
+    Using subplots with two columns
+    """
+    x = np.arange(1990, 2023)
+    Nb_cols = len(data.columns)
+    fig, axs = plt.subplots((Nb_cols + 1) // 2, 2, figsize=(15, 10))
+    axs = axs.flatten()
+
+    for i, col in enumerate(data.columns[:]):
+        for j, group in enumerate(groups):
+            color = plt.cm.tab10(j)
+            for country in group:
+                axs[i].plot(x, data.loc[country][col], label=country, color=color) 
+        axs[i].set_title(col)
+        # axs[i].set_xticks(x)
+        # axs[i].set_xticklabels(x, rotation=45)
+        if legend:
+            axs[i].legend()  # Add legend here
+    plt.tight_layout()
+    plt.show()
 
 def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True):
     """"
@@ -75,7 +99,6 @@ def plot_PHI(PHI, alt_names, labels=True):
     if labels:
         plt.legend()
     plt.show()
-
 
 def plot_gammas(gamma_matrix, alt_names):
     """

@@ -1,0 +1,11 @@
+For Entire dataset
+
+# Nb of criteria
+K = data.columns.shape[0] # Nb of criteria
+L = data.iloc[0]["co2prod"].shape[0] # Length of the time series
+
+W = [1/K for i in range(K)] # Weights of the criteria (equal weights)
+Q = [4, 0.3, 40,  0.4, 4, 2] # Indifference thresholds
+P = [28, 0.9, 80, 1, 20, 12] # Preference thresholds
+
+Weight_vector = [1/L for _ in range(L)] # Equal weights times
