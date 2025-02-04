@@ -35,7 +35,8 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random"):
     iter = 0
     # Iterate until convergence
     converged = False
-    while not converged:
+    while not converged and iter < 100:
+        # print(f"Iteration {iter}")
         iter += 1
 
         # Assign each alternative to the closest medoid
@@ -54,8 +55,17 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random"):
                 medoids[np.where(medoids == medoid)[0][0]] = new_medoid # Replace the medoid
                 clusters = {medoid: [] for medoid in medoids} # Reset the clusters
                 converged = False # The algorithm has not converged -> continue the iterations
+                # print("New medoid:", new_medoid, " replaces Old medoid:", medoid)
                 break # Stop the loop and start a new iteration, this stops the loop:
     
+    if iter == 100:
+        print("The algorithm did not converge after 100 iterations, assigning the closest alternatives to the medoids")
+        # Assign each alternative to the closest medoid
+        for alternative in alternatives:
+            distances = [distance_matrix.loc[alternative, medoid] for medoid in medoids]
+            closest_medoid = medoids[np.argmin(distances)]
+            clusters[closest_medoid].append(alternative)
+
     return medoids, clusters, iter
 
 

@@ -17,12 +17,12 @@ def linear_P_c(a_i, a_j, c, P, Q):
     """
     d = a_i[c] - a_j[c]
     for i in range(len(d)): # For each time step
-        if d[i] <= Q[c-1]: # c-1 because the criteria are indexed from 1
+        if d[i] <= Q[c]:
             d[i] = 0
-        elif d[i] > P[c-1]:
+        elif d[i] > P[c]:
             d[i] = 1
         else:
-            d[i] = (d[i] - Q[c-1]) / (P[c-1] - Q[c-1])
+            d[i] = (d[i] - Q[c]) / (P[c] - Q[c])
     return d
 
 def P_c_matrix(data, c, P, Q):
@@ -39,7 +39,7 @@ def P_c_matrix(data, c, P, Q):
     for i in range(N):
         for j in range(N):
             if i != j:
-                P_c[i][j] = linear_P_c(data.iloc[i], data.iloc[j], c+1, P, Q)
+                P_c[i][j] = linear_P_c(data.iloc[i], data.iloc[j], c, P, Q)
     return P_c
 
 def get_Phi_c_ai(i, P_c):
@@ -77,7 +77,7 @@ def get_all_Phi_c(data, P, Q):
     """
     Returns: A list of all preference functions for all criteria, K is the number of criteria
     """
-    K = data.columns.shape[0] -1 # Number of criteria
+    K = data.columns.shape[0] # Number of criteria
     return [get_Phi_c(data, c, P, Q) for c in range(K)]
 
 def PHI_all(PHI_c_all, W, N, L, K):
@@ -89,6 +89,7 @@ def PHI_all(PHI_c_all, W, N, L, K):
     for c in range(K):
         PHI += W[c] * PHI_c_all[c]
     return PHI
+
 
 def get_PHI(data, W, P, Q):
     """

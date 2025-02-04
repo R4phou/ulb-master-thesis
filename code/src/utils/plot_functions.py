@@ -87,17 +87,18 @@ def plot_Phi_c_ai(PHI_c, title, labels=True):
 
 def plot_PHI(PHI, alt_names, labels=True):
     """
-    Plot the aggregated preference function
+    Plot the net flow series for all alternatives
     """
-    x = np.arange(1990, 2023)
-    N = PHI.shape[0]
-    plt.figure(figsize=(15, 5))
-    for i in range(N):
-        plt.plot(x, PHI[i], label=alt_names[i])
-    plt.title("PHI")
-    plt.grid()
+    fig, ax = plt.subplots()
+    # size
+    fig.set_size_inches(10, 5)
+    for i in range(PHI.shape[0]):
+        ax.plot(PHI.iloc[i], label=alt_names[i])
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Net flow")
+    ax.set_title("PHI scores for all alternatives")
     if labels:
-        plt.legend()
+        ax.legend()
     plt.show()
 
 def plot_gammas(gamma_matrix, alt_names):
