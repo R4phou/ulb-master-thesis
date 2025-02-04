@@ -52,6 +52,25 @@ def plot_cluster(groups, data, legend=False):
     plt.tight_layout()
     plt.show()
 
+def plot_cluster_phi(PHI, groups, legend=False):
+    """
+    Plot the net flow series for all alternatives
+    """
+    fig, ax = plt.subplots()
+    # size
+    fig.set_size_inches(10, 5)
+    for i in range(len(groups)):
+        color = plt.cm.tab10(i)
+        for j in groups[i]:
+            ax.plot(PHI.loc[j], label=j, color=color)
+    ax.set_xlabel("Year")
+    ax.set_ylabel("Net flow")
+    ax.set_title("PHI scores for all alternatives")
+    if legend:
+        ax.legend()
+    # ax.legend()
+    plt.show()
+
 def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True):
     """"
     Returns subplots for each criteria
