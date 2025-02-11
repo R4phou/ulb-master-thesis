@@ -9,3 +9,17 @@ Q = [4, 0.3, 40,  0.4, 4, 2] # Indifference thresholds
 P = [28, 0.9, 80, 1, 20, 12] # Preference thresholds
 
 Weight_vector = [1/L for _ in range(L)] # Equal weights times
+
+
+
+Deuxième algo
+- Sum of eta value is a bit assumption to study, what do we lose and what do we keep?
+- We have a temporal distances so temporal clustering (cluster at every time step then look at evolution of clusters)
+- Cluster l times and look at evolution of clusters
+- Look at stability of clusters over time
+--> then lose question of the evolution through time when clusters
+
+==> Try time point clustering then look at the evolution of the clusters
+
+
+Weighted sum to time series to scalar -> Temporal clustering
