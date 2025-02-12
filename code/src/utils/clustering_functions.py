@@ -3,7 +3,7 @@ if __name__ == "__main__":
 else:
     from utils.utils import *
 
-def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", print_results=True):
+def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", print_results=True, iter_max=100, seed=None):
     """ 
     K-Medoid clustering algorithm using the Aggregated Eta matrix
         - alternatives: np.array of the alternatives names only
@@ -14,10 +14,11 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", 
         - the medoids of the clusters
         - the clusters
     """
+
     # Initialize medoids
     if prototype_method == "random":
-        medoids = np.random.choice(alternatives, k, replace=False) # Randomly select k alternatives
-
+        medoids = np.random.choice(alternatives, k, replace=False)
+    
     elif prototype_method == "farthest":
         # Select the farthest alternatives from each other
         medoids = [alternatives[0]]
@@ -25,7 +26,13 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", 
             distances = [np.min([distance_matrix.loc[alternative, medoid] for medoid in medoids]) for alternative in alternatives]
             new_medoid = alternatives[np.argmax(distances)]
             medoids.append(new_medoid)
-
+        medoids = np.array(medoids)
+    
+    elif prototype_method == "seed":
+        if seed:
+            medoids = np.array(seed)
+        else:
+            raise ValueError("Seed medoids not provided")
 
     if print_results:
         print("Initial medoids:", medoids)
@@ -33,40 +40,63 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", 
     # Initialize clusters
     clusters = {medoid: [] for medoid in medoids}
 
+    # Initialize assignment check
+    assigned = {alternative: False for alternative in alternatives}
+
+
+    # When entering the loop, we just have the medoids and no assigned alternatives
     iter = 0
-    # Iterate until convergence
     converged = False
-    while not converged and iter < 100:
-        # print(f"Iteration {iter}")
-        iter += 1
+    while not converged and iter < iter_max:
+
+        # Assign medoid to its cluster
+        for medoid in medoids:
+            clusters[medoid].append(medoid)
+            assigned[medoid] = True
+
 
         # Assign each alternative to the closest medoid
         for alternative in alternatives:
-            distances = [distance_matrix.loc[alternative, medoid] for medoid in medoids]
-            closest_medoid = medoids[np.argmin(distances)]
-            clusters[closest_medoid].append(alternative)
+            if not assigned[alternative]: # If not yet assigned, assign it to the closest medoid
+                distances = [distance_matrix.loc[alternative, medoid] for medoid in medoids] # Take the distances to each medoid
+                closest_medoid = medoids[np.argmin(distances)] # Take the medoid with the smallest distance
+                clusters[closest_medoid].append(alternative) # Assign the alternative to the cluster of the closest medoid
+                assigned[alternative] = True
+
+        if print_results:
+            print("Iteration", iter)
+            print("Clusters:", clusters)
+            print("Assigned:", all(assigned.values()))
 
         # Update medoids
         converged = True
         for medoid in medoids:
             cluster = clusters[medoid]
-            distances = [np.sum([distance_matrix.loc[alternative1, alternative2] for alternative1 in cluster]) for alternative2 in cluster] # Sum of distances to all other alternatives in the cluster
-            new_medoid = cluster[np.argmin(distances)] # Alternative with the smallest sum of distances
-            if new_medoid != medoid: # If the medoid has changed
-                medoids[np.where(medoids == medoid)[0][0]] = new_medoid # Replace the medoid
-                clusters = {medoid: [] for medoid in medoids} # Reset the clusters
-                converged = False # The algorithm has not converged -> continue the iterations
-                # print("New medoid:", new_medoid, " replaces Old medoid:", medoid)
-                break # Stop the loop and start a new iteration, this stops the loop:
+
+            # Compute the sum of the distance for each alternative in the cluster towards the other alternatives in the cluster
+            distances = [np.sum([distance_matrix.loc[alternative, alternative2] for alternative2 in cluster]) for alternative in cluster]
+            if len(distances) > 1:
+                new_medoid = cluster[np.argmin(distances)] # Take the alternative with the smallest sum of distances
+            else:
+                new_medoid = medoid
+            if new_medoid != medoid:
+                # print("Medoid", medoid, "changed to", new_medoid, "in array", medoids)
+                index = np.where(medoids == medoid)
+                # print("Index:", index[0])
+                medoids[index[0][0]] = new_medoid # Update the medoid in the list
+                converged = False # If at least one medoid has changed, we have not converged
+                clusters = {medoid: [] for medoid in medoids} # Reinitialize the cluster
+                assigned = {alternative: False for alternative in alternatives} # Reinitialize the cluster assignment check
+        iter += 1
     
-    if iter == 100:
+    if iter_max == iter:
         if print_results:
-            print("The algorithm did not converge after 100 iterations, assigning the closest alternatives to the medoids")
-        # Assign each alternative to the closest medoid
+            print("Max iterations reached, no convergence but assigning the alternatives to the closest last medoid computed:")
         for alternative in alternatives:
-            distances = [distance_matrix.loc[alternative, medoid] for medoid in medoids]
-            closest_medoid = medoids[np.argmin(distances)]
-            clusters[closest_medoid].append(alternative)
+            if not assigned[alternative]:
+                distances = [distance_matrix.loc[alternative, medoid] for medoid in medoids]
+                closest_medoid = medoids[np.argmin(distances)]
+                clusters[closest_medoid].append(alternative)
 
     return medoids, clusters, iter
 
