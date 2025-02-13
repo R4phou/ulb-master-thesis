@@ -12,20 +12,27 @@ def plot_data(data, legend=False):
     Using subplots with two columns
     """
     x = np.arange(1990, 2023)
-    Nb_cols = len(data.columns) - 1
+    Nb_cols = len(data.columns)
     fig, axs = plt.subplots((Nb_cols + 1) // 2, 2, figsize=(15, 10))
     axs = axs.flatten()
 
-    for i, col in enumerate(data.columns[1:]):
+    lines = []
+    labels = []
+
+    for i, col in enumerate(data.columns[:]):
         for j, row in data.iterrows():
-            axs[i].plot(x, row[col], label=row["iso3"]) 
+            line, = axs[i].plot(x, row[col], label=row.name)
+            if i == 0:  # Collect labels only once
+                lines.append(line)
+                labels.append(row.name)
         axs[i].set_title(col)
-        # axs[i].set_xticks(x)
-        # axs[i].set_xticklabels(x, rotation=45)
-        if legend:
-            axs[i].legend()  # Add legend here
+    
+    if legend:
+        fig.legend(lines, labels, loc='center left', bbox_to_anchor=(1, 0.5))  # Add a single legend to the right
+    
     plt.tight_layout()
     plt.show()
+
 
 def plot_cluster(groups, data, legend=False):
     """ 
@@ -71,23 +78,27 @@ def plot_cluster_phi(PHI, groups, legend=False):
     # ax.legend()
     plt.show()
 
-def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True):
-    """"
+def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True, pos=3):
+    """" 
     Returns subplots for each criteria
     - PHI_c_all: A list of k lists of N time series
     """
     K = len(PHI_c_all)
     N = len(PHI_c_all[0])
-    plt.figure(figsize=(15, 5))
+    plt.figure(figsize=(15, 10))
     x = np.arange(1990, 2023)
     for c in range(K):
         plt.subplot((K + 1) // 2, 2, c + 1)
         PHI_c = PHI_c_all[c]
         for i in range(N):
             plt.plot(x, PHI_c[i], label=alt_names[i])
-        plt.title(f"PHI {c+1} - {col_names[c]}")
-        if labels:
-            plt.legend()
+        # plt.axhline(y=-0.8, color='white', linestyle='-')
+        # plt.axhline(y=0.8, color='white', linestyle='-')
+        plt.title(f"Phi_c {c+1} - {col_names[c]}")
+        plt.xlabel("Year")
+        plt.ylabel("Phi_c(a_i)")
+        if c == K - pos:
+            plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.tight_layout()
     plt.show()
 
