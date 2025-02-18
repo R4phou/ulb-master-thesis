@@ -115,10 +115,22 @@ def plot_Phi_c_ai(PHI_c, title, labels=True):
         plt.legend()
     plt.show()
 
-def plot_PHI(PHI, alt_names, labels=True):
+def plot_PHI(PHI, labels=True):
     """
     Plot the net flow series for all alternatives
+    :param PHI: dataframe with alternatives as index and years as columns
     """
+    if labels:
+        score = {}
+        for i in range(PHI.shape[0]):
+            score[PHI.index[i]] = sum(PHI.iloc[i])
+        score = dict(sorted(score.items(), key=lambda item: item[1], reverse=True))
+
+        # Sort the alternatives by score
+        PHI = PHI.loc[list(score.keys())]
+
+    alt_names = PHI.index
+
     fig, ax = plt.subplots()
     # size
     fig.set_size_inches(10, 5)
@@ -128,8 +140,10 @@ def plot_PHI(PHI, alt_names, labels=True):
     ax.set_ylabel("Net flow")
     ax.set_title("PHI scores for all alternatives")
     if labels:
-        ax.legend()
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
     plt.show()
+
 
 def plot_gammas(gamma_matrix, alt_names):
     """

@@ -25,7 +25,7 @@ def linear_P_c(a_i, a_j, c, P, Q):
             d[i] = (d[i] - Q[c]) / (P[c] - Q[c])
     return d
 
-def P_c_matrix(data, c, P, Q):
+def P_c_matrix(data, c, P, Q, L):
     """
     Returns: The preference matrix within criteria c, size NxN where each cell is a time series
     - data: the multi-criteria time series data
@@ -33,7 +33,6 @@ def P_c_matrix(data, c, P, Q):
 
     The values in P_c matrix are between 0 and 1
     """
-    L = data.iloc[0]["co2prod"].shape[0] #lenght of the time series
     N = data.shape[0]
     P_c = np.zeros((N, N, L))
     for i in range(N):
@@ -58,27 +57,26 @@ def get_Phi_c_ai(i, P_c):
         sum += P_c[i][j] - P_c[j][i] 
     return 1/(N-1) * sum
 
-def get_Phi_c(data, c, P, Q):
+def get_Phi_c(data, c, P, Q, L):
     """
     Returns: The preference function for all time series within criteria c
         - Phi_c is a list of size N where each cell is a time series
     - data: the multi-criteria time series data
     - c: the criteria identifier
     """
-    L = data.iloc[0]["co2prod"].shape[0] #lenght of the time series
-    P_c = P_c_matrix(data, c, P, Q)
+    P_c = P_c_matrix(data, c, P, Q, L)
     N = data.shape[0]
     Phi_c = np.zeros((N, L))
     for i in range(N):
         Phi_c[i] = get_Phi_c_ai(i, P_c)
     return Phi_c
 
-def get_all_Phi_c(data, P, Q):
+def get_all_Phi_c(data, P, Q, L):
     """
     Returns: A list of all preference functions for all criteria, K is the number of criteria
     """
     K = data.columns.shape[0] # Number of criteria
-    return [get_Phi_c(data, c, P, Q) for c in range(K)]
+    return [get_Phi_c(data, c, P, Q, L) for c in range(K)]
 
 def PHI_all(PHI_c_all, W, N, L, K):
     """
@@ -139,7 +137,7 @@ def get_gamma_matrix(data, PHI_c_all, W):
     - PHI_c_all: A list of k lists of N time series
     - W: The weights of the criteria
     """
-    criterias = data.columns[1:]
+    criterias = data.columns[:]
 
     L = data.iloc[0][criterias[1]].shape[0] # Length of the time series
     N = data.shape[0] # Number of time series/alternatives
