@@ -136,6 +136,70 @@ def read_data():
 
     return data
 
+def read_stock_data(path):
+    """ 
+        Read the stock data from the csv file and return a dataframe with the following columns:
+        name (index), open, high, low, close, volume
+        each cell is the numpy array of the values of the stock over time
+        It also returns the dates of the stocks (for plotting purposes)
+    """
+
+    def check_dates(dates):
+        """ 
+            Check that dates are the same for all stocks (necessary condition for applying the promethee method)
+        """
+        for i in range(1, len(dates)):
+            if not np.array_equal(dates[i], dates[0]):
+                return False
+        return True
+
+    def filter_by_dates(data):
+        """ 
+            The idea here is to only keep the stocks that have the same dates each time
+        """
+        filtered_data = data.copy()
+        for i in range(len(data)):
+            if not np.array_equal(data["date"].iloc[i], data["date"].iloc[0]):
+                filtered_data = filtered_data.drop(data.index[i])
+        return filtered_data
+
+    # Read the data
+    df = pd.read_csv(path)
+
+    # Get the dates
+    dates = df.groupby("Name").apply(lambda x: x["date"].values)
+    
+    # Create a new df with name as index and open, high, low, close, volume, dates as columns
+    # Each cell is a np.array of the calues of the corresponding column for the stock
+    data = df.groupby("Name").apply(lambda x: x[["open", "high", "low", "close", "volume"]].values)
+
+    data = pd.DataFrame(data, index=data.index, columns=["data"])
+    data["open"] = data["data"].apply(lambda x: x[:, 0])
+    data["high"] = data["data"].apply(lambda x: x[:, 1])
+    data["low"] = data["data"].apply(lambda x: x[:, 2])
+    data["close"] = data["data"].apply(lambda x: x[:, 3])
+    data["volume"] = data["data"].apply(lambda x: x[:, 4])
+
+    # Add the dates
+    dates = df.groupby("Name").apply(lambda x: x["date"].values)
+    data["date"] = dates
+
+    # Check that dates are the same for all stocks
+    if not check_dates(data["date"].values):
+        print("Dates are not the same for all stocks, a filtering will be applied")
+        data = filter_by_dates(data)
+
+        if not check_dates(data["date"].values):
+           raise Exception("Dates are still not the same for all stocks")
+        else:
+            print("Data filtered successfully!")
+            dates = data["date"].values[0]
+        
+
+    # Drop the useless column
+    data = data.drop(columns=["data", "date"])
+    return data, dates
+
 def scale_column(data, col):
     """
     Scale a column between 0 and 1 knowing that each row is a sequence np.array
