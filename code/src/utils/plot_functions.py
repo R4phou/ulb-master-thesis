@@ -59,7 +59,7 @@ def plot_cluster(groups, data, legend=False):
     plt.tight_layout()
     plt.show()
 
-def plot_cluster_phi(PHI, groups, legend=False):
+def plot_cluster_phi(PHI, groups, legend=False, ticks=False):
     """
     Plot the net flow series for all alternatives
     """
@@ -74,8 +74,12 @@ def plot_cluster_phi(PHI, groups, legend=False):
     ax.set_ylabel("Net flow")
     ax.set_title("PHI scores for all alternatives")
     if legend:
-        ax.legend()
-    # ax.legend()
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    if not ticks:
+        ax.set_xticks(ax.get_xticks()[::len(ax.get_xticks()) // 10])  # Show only a few ticks
+        # Put them at 45 degrees
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(45)
     plt.show()
 
 def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True, pos=3):
@@ -115,10 +119,12 @@ def plot_Phi_c_ai(PHI_c, title, labels=True):
         plt.legend()
     plt.show()
 
-def plot_PHI(PHI, labels=True):
+def plot_PHI(PHI, labels=True, ticks=True):
     """
     Plot the net flow series for all alternatives
     :param PHI: dataframe with alternatives as index and years as columns
+    :param labels: boolean, whether to show labels or not
+    :param ticks: boolean, whether to show all x ticks or only a few
     """
     if labels:
         score = {}
@@ -141,6 +147,12 @@ def plot_PHI(PHI, labels=True):
     ax.set_title("PHI scores for all alternatives")
     if labels:
         ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+    
+    if not ticks:
+        ax.set_xticks(ax.get_xticks()[::len(ax.get_xticks()) // 10])  # Show only a few ticks
+        # Put them at 45 degrees
+        for tick in ax.get_xticklabels():
+            tick.set_rotation(45)
 
     plt.show()
 
@@ -160,6 +172,43 @@ def plot_gammas(gamma_matrix, alt_names):
                 axes[i].grid()
                 axes[i].legend()
     # plt.tight_layout()
+    plt.show()
+
+
+def plot_cluster_general(groups, data, dates, legend=False, ticks=False):
+    """ 
+    Receives a list of groups (a group is a list of indexes of the data)
+    For each column (criterion), plot a graph with one color per group
+    On the x-axis, the years (1990-2022)
+    Using subplots with two columns
+    """
+    x = dates
+    Nb_cols = len(data.columns)
+    fig, axs = plt.subplots((Nb_cols + 1) // 2, 2, figsize=(15, 10))
+    axs = axs.flatten()
+
+    lines = []
+    labels = []
+
+    for i, col in enumerate(data.columns[:]):
+        for j, group in enumerate(groups):
+            color = plt.cm.tab10(j)
+            for country in group:
+                line, = axs[i].plot(x, data.loc[country][col], label=country, color=color)
+                if i == 0:  # Collect labels only once
+                    lines.append(line)
+                    labels.append(country)
+        axs[i].set_title(col)
+        if not ticks:
+            axs[i].set_xticks(axs[i].get_xticks()[::len(axs[i].get_xticks()) // 10])  # Show only a few ticks
+            # Put them at 45 degrees
+            for tick in axs[i].get_xticklabels():
+                tick.set_rotation(45)
+
+    if legend:
+        fig.legend(lines, labels, loc='center left', bbox_to_anchor=(1, 0.5))  # Add a single legend to the right
+
+    plt.tight_layout()
     plt.show()
 
 

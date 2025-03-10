@@ -149,9 +149,8 @@ def get_gamma_matrix(data, PHI_c_all, W):
                 gamma_matrix[i][j] = gamma_ai_aj(data.iloc[i], data.iloc[j], i, j, PHI_c_all, W, L, criterias)
     return gamma_matrix
 
-def get_eta_matrix(data, phi_c_all, W):
+def get_eta_matrix(data, phi_c_all, W, L):
     N = data.shape[0]
-    L = data.iloc[0]["co2prod"].shape[0]
     gamma = get_gamma_matrix(data, phi_c_all, W)
     eta = np.zeros((N, N, L))
     for i in range(N):
