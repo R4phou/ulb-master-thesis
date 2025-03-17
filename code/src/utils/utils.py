@@ -214,7 +214,7 @@ def scale_data(data):
     """
     Scale all the columns that are sequences (all except the first one, here it is 'iso3')
     """
-    for col in data.columns[1:]:
+    for col in data.columns[:]:
         data = scale_column(data, col)
     return data
 
