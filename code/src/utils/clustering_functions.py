@@ -152,7 +152,7 @@ def kMeans(series, k, max_it=1000, distance_function=euclid_distance):
     """ 
 
     # Select k random centroids
-    centroids = select_prototype(series, k, random=False)
+    centroids = select_prototype(series, k, random=True)
     # Create a dictionary to store the clusters
     clusters = {i: [] for i in range(k)}
     # Create a dictionary to store the previous clusters
@@ -161,7 +161,7 @@ def kMeans(series, k, max_it=1000, distance_function=euclid_distance):
     distances = {i: [] for i in range(k)}
     # Initialize the assignment of the time series to the clusters
     assignment = np.zeros(series.shape[0])
-    for it in tqdm(range(max_it)):
+    for it in range(max_it):
         # Update the assignment of the time series to the clusters
         for i in range(series.shape[0]):
             distances = [distance_function(series.iloc[i], centroids.iloc[j]) for j in range(k)]
