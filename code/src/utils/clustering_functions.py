@@ -21,13 +21,23 @@ def K_Medoid_Eta(alternatives, distance_matrix, k=3, prototype_method="random", 
     
     elif prototype_method == "farthest":
         # Select the farthest alternatives from each other
-        medoids = [alternatives[0]]
+        medoids = [alternatives[0]] # Start with the first alternative
         for _ in range(k-1):
             distances = [np.min([distance_matrix.loc[alternative, medoid] for medoid in medoids]) for alternative in alternatives]
             new_medoid = alternatives[np.argmax(distances)]
             medoids.append(new_medoid)
         medoids = np.array(medoids)
     
+    elif prototype_method == "km++":
+        # Select randomly the first medoid
+        random_index = np.random.choice(len(alternatives))
+        medoids = [alternatives[random_index]]
+        for _ in range(k-1):
+            distances = [np.min([distance_matrix.loc[alternative, medoid] for medoid in medoids]) for alternative in alternatives]
+            new_medoid = alternatives[np.argmax(distances)]
+            medoids.append(new_medoid)
+        medoids = np.array(medoids)
+
     elif prototype_method == "seed":
         if seed:
             medoids = np.array(seed)
@@ -132,7 +142,8 @@ def select_prototype(series, k, random=True):
         return series.sample(k)
     else:
         prototypes = []
-        prototypes.append(series.iloc[0])
+        index = np.random.choice(series.shape[0])
+        prototypes.append(series.iloc[index])
         for i in range(1, k):
             distances = []
             for j in range(series.shape[0]):
@@ -144,7 +155,7 @@ def select_prototype(series, k, random=True):
         return pd.DataFrame(prototypes)
 
 
-def kMeans(series, k, max_it=1000, distance_function=euclid_distance):
+def kMeans(series, k, max_it=1000, distance_function=euclid_distance, random_selec=True):
     """ 
     kMeans clustering algorithm
     - series is a dataframe with the time series that we want to cluster
@@ -152,7 +163,7 @@ def kMeans(series, k, max_it=1000, distance_function=euclid_distance):
     """ 
 
     # Select k random centroids
-    centroids = select_prototype(series, k, random=True)
+    centroids = select_prototype(series, k, random=random_selec)
     # Create a dictionary to store the clusters
     clusters = {i: [] for i in range(k)}
     # Create a dictionary to store the previous clusters
