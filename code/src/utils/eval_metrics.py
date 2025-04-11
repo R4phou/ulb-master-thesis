@@ -42,7 +42,10 @@ def dunn_index_multivariate(clusters, data):
             for i in range(len(cluster)):
                 for j in range(i+1, len(cluster)):
                     diameter += np.linalg.norm(data.loc[cluster[i]] - data.loc[cluster[j]])
-            diameter /= len(cluster)
+            if len(cluster) > 1:
+                diameter = diameter / (len(cluster)*(len(cluster)-1)/2)
+            else:
+                diameter = -1
             cluster_diameters.append(diameter)
 
 
