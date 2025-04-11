@@ -155,7 +155,7 @@ def select_prototype(series, k, random=True):
         return pd.DataFrame(prototypes)
 
 
-def kMeans(series, k, max_it=1000, distance_function=euclid_distance, random_selec=True):
+def kMeans(series, k, max_it=100, distance_function=euclid_distance, random_selec=True):
     """ 
     kMeans clustering algorithm
     - series is a dataframe with the time series that we want to cluster
