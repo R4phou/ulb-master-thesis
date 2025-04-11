@@ -189,3 +189,84 @@ def kMeans(series, k, max_it=100, distance_function=euclid_distance, random_sele
     return clusters
 
 
+def p2Kmeans(k, PHI_df):
+    """ 
+    This function performs the Promethee II method on the data
+    Then apply the K-means clustering algorithm on the results
+    
+    Parameters:
+    data (DataFrame): The data to be processed
+    W (list): The weights of the criteria
+    P (list): The preference function parameters
+    Q (list): The indifference function parameters
+    K (int): The number of criteria
+    L (int): The length of the time series
+    """
+    results = kMeans(PHI_df, k, max_it=50, distance_function= euclid_distance, random_selec=False)
+
+    # Get a list of list of ISO3 codes for each cluster
+    clusters = []
+    for i in range(k):
+        clusters.append(results[i].index.tolist())
+    # print(clusters)
+
+    return clusters
+
+
+def G_Kmedoid(data, dist_matrix, k=3, prototype_method="random"):
+    """ 
+    Function that receives the raw dataset and creates the clusters using the K-Medoid algorithm using Promethee Gamma as the distance matrix
+    - data: pd.DataFrame with the raw dataset - iso3 as index and the criteria as columns names
+    - dist_matrix: pd.DataFrame with the distance matrix - iso3 as index and columns names
+    - prototype_method: method to choose the prototype (random, k-means++, etc.)
+    - k: number of clusters to create
+    """
+    # Get the criteria names
+    alternatives = data.index
+
+    # # Computing the distance matrix
+    # phi_c_all = pf.get_all_Phi_c(data, P, Q, L)
+    # eta = pf.get_eta_matrix(data, phi_c_all, W, L)
+    # agg_eta = pf.aggregate_all_series(eta, Weight_vector)
+    # dist_matrix = pd.DataFrame(agg_eta, index=alternatives, columns=alternatives)
+
+    # Run the K-Medoid algorithm
+    clusters = K_Medoid_Eta(alternatives, dist_matrix, k, prototype_method=prototype_method, print_results=False)[1]
+
+    cluster_list = [val for val in clusters.values()]
+
+    # return medoids, clusters
+    return cluster_list
+
+def KMeans_normal(data, k, maxit=5):
+    n_clusters = k
+
+
+    n_samples = data.shape[0]
+    n_features = data.shape[1]
+
+    formatted_data = np.stack([np.stack(data.iloc[:, i].values) for i in range(n_features)], axis=-1)
+
+    names = data.index
+    names_formatted = [name for name in names]
+
+    km = TimeSeriesKMeans(n_clusters=n_clusters, metric="euclidean", max_iter=maxit).fit(formatted_data)
+   
+    clusters = [[] for _ in range(n_clusters)]
+    for i in range(n_samples):
+        clusters[km.labels_[i]].append(names_formatted[i])
+
+    return clusters
+
+
+def get_results(k, data, dist_matrix, PHI_df, nb_try):
+
+    p2km_results = []
+    gkm_results_clusters = []
+    trad_km_results = []
+    for i in tqdm(range(nb_try)):
+        gkm_results_clusters.append(G_Kmedoid(data, dist_matrix, k=k, prototype_method="km++"))
+        p2km_results.append(p2Kmeans(k, PHI_df))
+        trad_km_results.append(KMeans_normal(data, k))
+    
+    return p2km_results, gkm_results_clusters, trad_km_results

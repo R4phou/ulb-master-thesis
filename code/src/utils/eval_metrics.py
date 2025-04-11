@@ -64,3 +64,55 @@ def dunn_index_multivariate(clusters, data):
         index += dunn_index_univariate(clusters, data[criteria])
 
     return index / len(criterias)
+
+
+
+def evaluate_results_on_data(results, data):
+    """ 
+    Evaluate the Dunn index of the clustering results on the data
+    """
+    dunn_indices = []
+    for clusters in results:
+        dunn_index = dunn_index_multivariate(clusters, data)
+        dunn_indices.append(dunn_index)
+    
+    return dunn_indices
+
+def evaluate_results_on_net_flow_scores(results, PHI_df):
+    """ 
+    Evaluate the Dunn index of the clustering results on the net flow scores
+    """
+    dunn_indices = []
+    for clusters in results:
+        dunn_index = dunn_index_multivariate(clusters, PHI_df)
+        dunn_indices.append(dunn_index)
+    
+    return dunn_indices
+
+def evaluate_results_on_mono_criteria(results, phi_c_all_df):
+    """ 
+    Evaluate the Dunn index of the clustering results on the mono criteria scores
+    """
+    dunn_indices = []
+    for clusters in results:
+        dunn_index = dunn_index_multivariate(clusters, phi_c_all_df)
+        dunn_indices.append(dunn_index)
+    
+    return dunn_indices
+
+def evaluate_result_repartition_on_data(p2km_clusters, gkm_clusters, km_clusters, data, method=evaluate_results_on_data, title="Dunn Index of the clustering on the data"):
+    """ 
+    Evaluate the Dunn index of the clustering results on the data
+    """
+    p2km_evaluations = np.array(method(p2km_clusters, data))
+    gkm_evaluations = np.array(method(gkm_clusters, data))
+    km_evaluations = np.array(method(km_clusters, data))
+
+
+    # Plot the Boxplots in order to compare the Dunn index of the three methods
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.boxplot([p2km_evaluations, gkm_evaluations, km_evaluations], labels=["P2KMeans", "G-KMedoid", "KMeans"])
+    ax.set_title(title)
+    ax.set_ylabel("Dunn index")
+    ax.set_xlabel("Clustering method")
+    plt.show()

@@ -4,6 +4,7 @@ from matplotlib.animation import FuncAnimation
 from PIL import Image
 from tqdm import tqdm
 import pandas as pd
+from tslearn.clustering import TimeSeriesKMeans
 
 def plot_data(data, legend=False):
     """ 
