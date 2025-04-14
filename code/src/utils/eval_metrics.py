@@ -68,7 +68,63 @@ def dunn_index_multivariate(clusters, data):
 
     return index / len(criterias)
 
+def compute_silhouette_score(cluster_groups, dataset):
+    """ 
+    Compute the silhouette score of a clustering
+    - cluster_groups: the clustering to evaluate (a list of lists of indices)
+    - dataset: the data used for clustering (a dataframe) (each cell is a np.array (time series)), each column is a criterion
 
+    Silhouette score is a measure of how similar an object is to its own cluster compared to other clusters.
+    The silhouette score ranges from -1 to 1. A value of 1 indicates that the object is well clustered, while a value of -1 indicates that the object is poorly clustered.
+
+    For each point in a cluster, we compute:
+    - a(i): the average distance between the point and all other points in the same cluster
+    - b(i): the average distance between the point and all points in the nearest cluster
+    - s(i): the silhouette score for the point, computed as (b(i) - a(i)) / max(a(i), b(i))
+    
+    The silhouette score for the clustering is the average of the silhouette scores for all points in all clusters.
+
+    """
+    def euclidean_distance(point1, point2):
+        return np.sum(np.linalg.norm(point1 - point2))
+
+    silhouette_scores_per_cluster = []
+    for cluster in cluster_groups:
+        silhouette_scores_for_points = []
+
+        for current_point in cluster:
+            # Compute a(i) and b(i) for each cluster (silhouette)
+            intra_cluster_distance = 0
+
+            if len(cluster) > 1: # Avoid division by zero (if singleton cluster)
+                # Compute a(i) for each cluster (a(i) is the average distance to all other points in the same cluster)
+                for other_point in cluster:
+                    if other_point != current_point:
+                        intra_cluster_distance += euclidean_distance(dataset.loc[current_point], dataset.loc[other_point])
+                intra_cluster_distance /= len(cluster) - 1
+
+            # Compute b(i) for each cluster (b(i) is the average distance to the nearest cluster)
+            # Initialize b(i) to a large value
+            nearest_cluster_distance = float("inf")
+            for other_cluster in cluster_groups:
+                if other_cluster != cluster:
+                    average_distance_to_other_cluster = 0
+                    for other_cluster_point in other_cluster:
+                        average_distance_to_other_cluster += euclidean_distance(dataset.loc[current_point], dataset.loc[other_cluster_point])
+                    average_distance_to_other_cluster /= len(other_cluster)
+                    nearest_cluster_distance = min(nearest_cluster_distance, average_distance_to_other_cluster)
+
+            # Compute silhouette score
+            silhouette_score = (nearest_cluster_distance - intra_cluster_distance) / max(intra_cluster_distance, nearest_cluster_distance)
+            silhouette_scores_for_points.append(silhouette_score)
+        silhouette_scores_per_cluster.append(silhouette_scores_for_points)
+
+    # Compute the average silhouette score for the clustering
+    all_silhouette_scores = []
+    for cluster_scores in silhouette_scores_per_cluster:
+        all_silhouette_scores += cluster_scores
+    overall_silhouette_score = np.mean(all_silhouette_scores)
+    return overall_silhouette_score
 
 def evaluate_results_on_data(results, data):
     """ 
@@ -103,7 +159,7 @@ def evaluate_results_on_mono_criteria(results, phi_c_all_df):
     
     return dunn_indices
 
-def evaluate_result_repartition_on_data(p2km_clusters, gkm_clusters, km_clusters, data, method=evaluate_results_on_data, title="Dunn Index of the clustering on the data"):
+def evaluate_result_repartition_on_data(p2km_clusters, gkm_clusters, km_clusters, data, method=evaluate_results_on_data, title="Dunn Index of the clustering on the data", metrics="Dunn index"):
     """ 
     Evaluate the Dunn index of the clustering results on the data
     """
@@ -116,6 +172,16 @@ def evaluate_result_repartition_on_data(p2km_clusters, gkm_clusters, km_clusters
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.boxplot([p2km_evaluations, gkm_evaluations, km_evaluations], labels=["P2KMeans", "G-KMedoid", "KMeans"])
     ax.set_title(title)
-    ax.set_ylabel("Dunn index")
+    ax.set_ylabel(metrics)
     ax.set_xlabel("Clustering method")
     plt.show()
+
+def evaluate_silhouette_on_data(results, data):
+    """ 
+    Evaluate the Dunn index of the clustering results on the data
+    """
+    scores = []
+    for clusters in results:
+        score = compute_silhouette_score(clusters, data)
+        scores.append(score)   
+    return scores
