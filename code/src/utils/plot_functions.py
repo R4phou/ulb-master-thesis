@@ -99,9 +99,9 @@ def plot_phi_c_all(PHI_c_all, col_names, alt_names, labels=True, pos=3):
             plt.plot(x, PHI_c[i], label=alt_names[i])
         # plt.axhline(y=-0.8, color='white', linestyle='-')
         # plt.axhline(y=0.8, color='white', linestyle='-')
-        plt.title(f"Phi_c {c+1} - {col_names[c]}")
+        plt.title(r"$\phi_c$" + f" - {col_names[c]}")
         plt.xlabel("Year")
-        plt.ylabel("Phi_c(a_i)")
+        plt.ylabel(r"$\phi_c(a_i)$")
         if c == K - pos:
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.tight_layout()
